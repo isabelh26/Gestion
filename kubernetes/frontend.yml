@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  namespace: gestiona
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: front-gestion:latest
+          imagePullPolicy: Never
+          env:
+            - name: VITE_API_URL
+              value: "http://localhost:30002/graphql"
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: gestiona
+spec:
+  type: NodePort #LoadBalancer
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80          # Puerto público que se expondrá
+      targetPort: 80  # Puerto del contenedor (Nginx)
+      nodePort: 30003
