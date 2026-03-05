@@ -1,4 +1,4 @@
-Plataforma de Gestión de Pedidos y Usuarios
+<img width="41" height="46" alt="image" src="https://github.com/user-attachments/assets/68dc42df-3df2-4cb3-8acb-9a9478df07f6" />Plataforma de Gestión de Pedidos y Usuarios
 1. Introducción
 
 Este proyecto implementa una plataforma de gestión de usuarios, productos y pedidos utilizando una arquitectura moderna basada en microservicios.
@@ -26,45 +26,81 @@ La plataforma permite administrar usuarios, productos y pedidos mediante una arq
 🏗 Arquitectura del Sistema
 
 El sistema sigue una arquitectura basada en Frontend + BFF + Microservicios.
+┌──────────────────────────────┐
+│            Usuario           │
+└──────────────┬───────────────┘
+               │
+               ▼
+┌──────────────────────────────┐
+│        Frontend Layer        │
+│                              │
+│   React + TypeScript        │
+│   React Router              │
+└──────────────┬───────────────┘
+               │ GraphQL
+               ▼
+┌──────────────────────────────┐
+│      BFF - API Gateway       │
+│                              │
+│  Spring Boot + GraphQL       │
+└──────────────┬───────────────┘
+               │ REST
+               ▼
+┌──────────────────────────────────────────┐
+│             Microservices                │
+│                                          │
+│ ┌──────────────┐  ┌──────────────┐       │
+│ │ User Service │  │ Product Svc  │       │
+│ │ Spring Boot  │  │ Spring Boot  │       │
+│ └───────┬──────┘  └───────┬──────┘       │
+│         │ REST             │ REST        │
+│         ▼                  ▼             │
+│           ┌──────────────┐               │
+│           │ Order Svc    │               │
+│           │ Spring Boot  │               │
+│           └───────┬──────┘               │
+└───────────────────┼──────────────────────┘
+                    │
+                    ▼
+         ┌───────────────────┐
+         │     PostgreSQL    │
+         │    Database       │
+         └───────────────────┘
 
-            +----------------------+
-            |        Usuario       |
-            +----------+-----------+
-                       |
-                       v
-            +----------------------+
-            |     Frontend React   |
-            |  (React + Router)    |
-            +----------+-----------+
-                       |
-                    GraphQL
-                       |
-                       v
-            +----------------------+
-            |  BFF - Spring Boot   |
-            |      GraphQL API     |
-            +----+-------+---------+
-                 |       |
-                REST    REST
-                 |       |
-   +-------------+       +-------------+
-   |                                   |
-+---------------+             +---------------+
-| Microservicio |             | Microservicio |
-|   Usuarios    |             |   Productos   |
-+---------------+             +---------------+
-        |
-        |
-        v
-+---------------+
-| Microservicio |
-|    Pedidos    |
-+---------------+
-        |
-        v
-   +-----------+
-   | PostgreSQL|
-   +-----------+
+
+
+Arquitectura por capas
+
+Usuario
+   |
+Frontend
+   |
+GraphQL
+   |
+BFF
+  / \
+Usuarios  Productos
+     |
+   Pedidos
+     |
+ PostgreSQL
+
+
+Distribución visual
+
+
+Controller
+     |
+Application Service
+     |
+Domain
+     |
+Repository
+     |
+PostgreSQL
+
+
+
 📐 Componentes del Sistema
 🎨 Frontend
 
@@ -140,33 +176,44 @@ Consultar pedidos por usuario
 
 Cada microservicio sigue el patrón de Arquitectura Hexagonal (Ports & Adapters).
 
-        +---------------------+
-        |      Controller     |
-        |     (REST API)      |
-        +----------+----------+
-                   |
-                   v
-        +---------------------+
-        |   Application       |
-        |      Service        |
-        +----------+----------+
-                   |
-                   v
-        +---------------------+
-        |       Domain        |
-        |  Entidades / Reglas |
-        +----------+----------+
-                   |
-                   v
-        +---------------------+
-        |     Repository      |
-        |   Acceso a Datos    |
-        +----------+----------+
-                   |
-                   v
-              +--------+
-              |Postgres|
-              +--------+
+
+       ┌───────────────┐
+                 │   Controller  │
+                 │   REST API    │
+                 └───────┬───────┘
+                         │
+                         ▼
+             ┌──────────────────────┐
+             │   Application Layer  │
+             │   Services / UseCase │
+             └──────────┬───────────┘
+                        │
+                        ▼
+           ┌──────────────────────────┐
+           │          Domain          │
+           │                          │
+           │ Entities                 │
+           │ Business Rules           │
+           │ Value Objects            │
+           └──────────┬───────────────┘
+                      │
+                      ▼
+            ┌───────────────────────┐
+            │    Repository Port    │
+            │  (Interface)          │
+            └──────────┬────────────┘
+                       │
+                       ▼
+           ┌─────────────────────────┐
+           │ Infrastructure Adapter  │
+           │ PostgreSQL Repository   │
+           └──────────┬──────────────┘
+                      │
+                      ▼
+                ┌───────────┐
+                │ PostgreSQL│
+                └───────────┘
+       
 
 Ventajas:
 
@@ -260,87 +307,64 @@ Frontend	30003
 🔎 Comandos de Verificación
 
 Ver pods:
-
 kubectl get pods -n gestiona
 
 Ver servicios:
-
 kubectl get svc -n gestiona
 
 Ver logs de un pod:
-
 kubectl logs <nombre-pod> -n gestiona
 
 Eliminar un pod:
-
 kubectl delete pod <nombre-pod> -n gestiona
 🎥 Checklist para la Demo
 
-Durante la presentación se debe demostrar:
+Resume
 
 Infraestructura
-
  Namespace creado
-
  Pods ejecutándose
-
  Servicios activos
 
 Backend
 
  Microservicio de usuarios funcionando
-
  Microservicio de productos funcionando
-
  Microservicio de pedidos funcionando
 
 Seguridad
 
  Login de usuario
-
  Generación de JWT
-
  Acceso a endpoints protegidos
 
 Frontend
 
  Navegación entre páginas
-
  Listado de productos
-
  Creación de pedidos
 
 Integración
-
  Comunicación Frontend → BFF
-
  Comunicación BFF → Microservicios
-
  Persistencia en PostgreSQL
 
 🛠 Tecnologías Utilizadas
+
 Backend
-
 Java
-
 Spring Boot
-
 GraphQL
-
 Maven
-
 Frontend
-
 React
-
 TypeScript
-
 React Router
 
 Infraestructura
-
 Docker
-
 Kubernetes
-
 PostgreSQL
+
+
+Autor: Isabel Táez
