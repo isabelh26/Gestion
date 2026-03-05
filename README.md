@@ -26,6 +26,8 @@ La plataforma permite administrar usuarios, productos y pedidos mediante una arq
 🏗 Arquitectura del Sistema
 
 El sistema sigue una arquitectura basada en Frontend + BFF + Microservicios.
+
+
 ┌──────────────────────────────┐
 │            Usuario           │
 └──────────────┬───────────────┘
@@ -60,16 +62,18 @@ El sistema sigue una arquitectura basada en Frontend + BFF + Microservicios.
 │           │ Spring Boot  │               │
 │           └───────┬──────┘               │
 └───────────────────┼──────────────────────┘
-                    │
-                    ▼
-         ┌───────────────────┐
-         │     PostgreSQL    │
-         │    Database       │
-         └───────────────────┘
+                │
+                ▼
+     ┌───────────────────┐
+     │     PostgreSQL    │
+     │    Database       │
+     └───────────────────┘
 
 
 
 Arquitectura por capas
+
+
 
 Usuario
    |
@@ -178,41 +182,41 @@ Cada microservicio sigue el patrón de Arquitectura Hexagonal (Ports & Adapters)
 
 
        ┌───────────────┐
-                 │   Controller  │
-                 │   REST API    │
-                 └───────┬───────┘
-                         │
-                         ▼
-             ┌──────────────────────┐
-             │   Application Layer  │
-             │   Services / UseCase │
-             └──────────┬───────────┘
-                        │
-                        ▼
-           ┌──────────────────────────┐
-           │          Domain          │
-           │                          │
-           │ Entities                 │
-           │ Business Rules           │
-           │ Value Objects            │
-           └──────────┬───────────────┘
-                      │
-                      ▼
-            ┌───────────────────────┐
-            │    Repository Port    │
-            │  (Interface)          │
-            └──────────┬────────────┘
-                       │
-                       ▼
-           ┌─────────────────────────┐
-           │ Infrastructure Adapter  │
-           │ PostgreSQL Repository   │
-           └──────────┬──────────────┘
-                      │
-                      ▼
-                ┌───────────┐
-                │ PostgreSQL│
-                └───────────┘
+       │   Controller  │
+       │   REST API    │
+       └───────┬───────┘
+               │
+               ▼
+   ┌──────────────────────┐
+   │   Application Layer  │
+   │   Services / UseCase │
+   └──────────┬───────────┘
+              │
+              ▼
+ ┌──────────────────────────┐
+ │          Domain          │
+ │                          │
+ │ Entities                 │
+ │ Business Rules           │
+ │ Value Objects            │
+ └──────────┬───────────────┘
+            │
+            ▼
+  ┌───────────────────────┐
+  │    Repository Port    │
+  │  (Interface)          │
+  └──────────┬────────────┘
+             │
+             ▼
+ ┌─────────────────────────┐
+ │ Infrastructure Adapter  │
+ │ PostgreSQL Repository   │
+ └──────────┬──────────────┘
+            │
+            ▼
+      ┌───────────┐
+      │ PostgreSQL│
+      └───────────┘
        
 
 Ventajas:
